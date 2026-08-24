@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Golden Romance - 3 Layer Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-primary: #d4af37;
+      --gold-light: #f7e7ce;
+      --gold-dark: #aa771c;
+      --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      --bg-white: #ffffff;
+      --bg-soft: #faf8f5;
+      --text-dark: #2c2c2c;
+      --shadow-lux: 0 15px 35px rgba(191, 149, 63, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: var(--bg-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .gold-text {
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .gold-divider {
+      width: 70px;
+      height: 2px;
+      background: var(--gold-gradient);
+      margin: 18px auto;
+      border-radius: 2px;
+    }
+
+    /* Particles Container */
+    .bg-particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Container Layer */
+    .layer-container {
+      width: 100%;
+      max-width: 850px;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .card {
+      background: var(--bg-white);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: var(--shadow-lux);
+      text-align: center;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .hidden {
+      display: none !important;
+      opacity: 0;
+    }
+
+    /* --- STAGE INDICATOR --- */
+    .stage-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--gold-primary);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    /* --- LAYER 1: QUIZ 5 SOAL --- */
+    .quiz-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-soft);
+      border-radius: 10px;
+      margin: 20px 0 25px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .quiz-progress-fill {
+      height: 100%;
+      width: 20%;
+      background: var(--gold-gradient);
+      transition: width 0.4s ease;
+    }
+
+    .question-box {
+      background: var(--bg-soft);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-btn {
+      background: #ffffff;
+      border: 1.5px solid rgba(212, 175, 55, 0.35);
+      padding: 14px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      transition: all 0.3s ease;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option-btn:hover {
+      border-color: var(--gold-primary);
+      background: #fffdf5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
+    .option-btn.selected {
+      background: var(--gold-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .quiz-result-summary {
+      background: rgba(212, 175, 55, 0.08);
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+    }
+
+    .score-number {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin: 10px 0;
+    }
+
+    /* --- LAYER 2: FORM PENDAPAT & EVALUASI --- */
+    .form-group {
+      text-align: left;
+      margin-bottom: 22px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .form-group textarea, .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 12px;
+      background: var(--bg-soft);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .form-group textarea:focus, .form-group input:focus {
+      border-color: var(--gold-primary);
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+    }
+
+    /* Buttons */
+    .btn-gold {
+      background: var(--gold-gradient);
+      border: none;
+      color: white;
+      padding: 15px 36px;
+      border-radius: 30px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(170, 119, 28, 0.3);
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      display: inline-block;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(170, 119, 28, 0.4);
+      opacity: 0.95;
+    }
+
+    /* --- LAYER 3: MAIN CAROUSEL & SUMMARY --- */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin: 25px auto;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      box-shadow: var(--shadow-lux);
+    }
+
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 400px;
+      position: relative;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      color: #ffffff;
+      padding: 22px 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-dark);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      background: var(--gold-primary);
+      color: white;
+    }
+
+    .btn-prev { left: 12px; }
+    .btn-next { right: 12px; }
+
+    .summary-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 25px;
+      text-align: left;
+    }
+
+    @media (max-width: 650px) {
+      .summary-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-box {
+      background: var(--bg-soft);
+      border-left: 4px solid var(--gold-primary);
+      padding: 18px 20px;
+      border-radius: 0 14px 14px 0;
+    }
+
+    .summary-box h4 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold-dark);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .summary-box p {
+      font-size: 0.9rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 25px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-particles" id="particles"></div>
+
+  <div class="layer-container">
+
+    <!-- LAYER 1: QUIZ GAME (5 SOAL WITH SCORE) -->
+    <div id="layer-1" class="card">
+      <div class="stage-badge">Stage 1 of 3 &bull; Mini Game</div>
+      <h2 class="gold-text" style="font-family: 'Cinzel', serif; font-size: 2.1rem;">Kuis Chemistry Pasangan</h2>
+      <div class="gold-divider"></div>
+      
+      <div id="quizContainer">
+        <p style="color: #666; font-size: 0.95rem;">Jawab 5 pertanyaan manis berikut untuk menguji seberapa kompak chemistry kita!</p>
+        
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="question-box">
+          <div class="question-title" id="questionTitle">Loading Soal...</div>
+          <div class="options-grid" id="optionsGrid"></div>
+        </div>
+
+        <button id="btnNextQuestion" class="btn-gold hidden" onclick="nextQuestion()">Pertanyaan Selanjutnya ✨</button>
+      </div>
+
+      <!-- Result View inside Layer 1 -->
+      <div id="quizResultView" class="hidden">
+        <div class="quiz-result-summary">
+          <p style="font-size: 0.9rem; color: #666; font-weight: 500;">SKOR CHEMISTRY KITA</p>
+          <div class="score-number gold-text" id="finalScore">0</div>
+          <p id="scoreMessage" style="font-weight: 600; color: var(--gold-dark); font-size: 1.05rem;"></p>
+        </div>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Selamat! Kamu berhasil menyelesaikan Stage 1. Klik di bawah untuk melanjutkan.</p>
+        <button class="btn-gold" onclick="goToLayer(2)">Lanjut ke Stage 2: Heart to Heart ✨</button>
+      </div>
+    </div>
+
+    <!-- LAYER 2: FORM PENDAPAT & EVALUASI PASANGAN -->
+    <div id="layer-2" class="card hidden">
+      <div class="stage-badge">Stage 2 of 3 &bull; Refleksi & Evaluasi</div>
+      <h2 class="gold-text" style="font-family: 'Cinzel', serif; font-size: 2.1rem;">Heart to Heart</h2>
+      <div class="gold-divider"></div>
+      <p style="color: #666; font-size: 0.95rem; margin-bottom: 25px;">
+        Sebelum melangkah ke galeri kenangan mewah kita, tuliskan pendapat jujur dan evaluasi untuk hubungan yang semakin indah.
+      </p>
+
+      <form onsubmit="submitFeedback(event)">
+        <div class="form-group">
+          <label for="namaPasangan">1. Nama / Panggilan Sayang Kamu</label>
+          <input type="text" id="namaPasangan" placeholder="Contoh: Sayang / Pacar Terbaik" required />
+        </div>
+
+        <div class="form-group">
+          <label for="halSuka">2. Hal apa yang paling kamu sukai dari hubungan atau sifatku?</label>
+          <textarea id="halSuka" rows="3" placeholder="Tuliskan hal-hal manis di sini..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="kurangAku">3. Menurutmu, apa masukan / kekurangan yang perlu aku perbaiki?</label>
+          <textarea id="kurangAku" rows="3" placeholder="Jujur saja ya sayang, agar aku bisa belajar jadi yang lebih baik..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="harapan">4. Harapan atau impian kencan kita selanjutnya</label>
+          <input type="text" id="harapan" placeholder="Contoh: Liburan bareng ke pantai / dinner romantis" required />
+        </div>
+
+        <button type="submit" class="btn-gold">Buka Galeri Kenangan & Rekap 💖</button>
+      </form>
+    </div>
+
+    <!-- LAYER 3: CAROUSEL UTAMA & REKAP KUALITAS -->
+    <div id="layer-3" class="card hidden">
+      <div class="stage-badge">Stage 3 of 3 &bull; Galeri Kenangan</div>
+      <h1 class="gold-text" style="font-family: 'Cinzel', serif; font-size: 2.3rem;">Our Golden Journey</h1>
+      <div class="gold-divider"></div>
+      <p style="color: #666; font-size: 0.95rem;">Terima kasih telah menjadi bagian paling berharga dalam setiap langkahku.</p>
+
+      <!-- Carousel Foto -->
+      <<div class="carousel-container">
+  <div class="carousel-slides" id="slides">
+    <div class="slide">
+      <img src="images/1.jpg" alt="Momen 1">
+      <div class="slide-caption">Senyum Favorit yang Selalu Membahagiakan</div>
+    </div>
+    <div class="slide">
+      <img src="images/2.jpg" alt="Momen 2">
+      <div class="slide-caption">Petualangan Indah Bersamamu</div>
+    </div>
+    <div class="slide">
+      <img src="images/3.jpg" alt="Momen 3">
+      <div class="slide-caption">Kenangan Manis yang Abadi</div>
+    </div>
+  </div>
+  <button class="carousel-btn btn-prev" onclick="moveSlide(-1)">&#10094;</button>
+  <button class="carousel-btn btn-next" onclick="moveSlide(1)">&#10095;</button>
+</div>
+
+      <!-- Ringkasan Kuis & Pendapat Pasangan -->
+      <div class="summary-card-grid">
+        <div class="summary-box">
+          <h4>Hasil Kuis Chemistry:</h4>
+          <p><strong>Skor Total:</strong> <span id="summaryScore" class="gold-text" style="font-weight:700;"></span></p>
+          <p id="summaryScoreText" style="margin-top: 4px; font-style: italic;"></p>
+        </div>
+
+        <div class="summary-box">
+          <h4>Rencana Kencan Impian:</h4>
+          <p id="summaryHarapan" style="font-weight: 500;"></p>
+        </div>
+
+        <div class="summary-box" style="grid-column: 1 / -1;">
+          <h4>Hal Yang Kamu Suka Dari Aku:</h4>
+          <p id="summarySuka"></p>
+        </div>
+
+        <div class="summary-box" style="grid-column: 1 / -1; border-left-color: var(--gold-dark);">
+          <h4>Catatan Evaluasi / Masukan Untukku:</h4>
+          <p id="summaryKurang"></p>
+        </div>
+      </div>
+
+      <footer>
+        <p>Made with Love & Golden Gradients &bull; Forever & Always</p>
+      </footer>
+    </div>
+
+  </div>
+
+  <script>
+    // --- STAGE NAVIGATION ---
+    function goToLayer(layerNumber) {
+      document.getElementById('layer-1').classList.add('hidden');
+      document.getElementById('layer-2').classList.add('hidden');
+      document.getElementById('layer-3').classList.add('hidden');
+
+      const targetLayer = document.getElementById(`layer-${layerNumber}`);
+      targetLayer.classList.remove('hidden');
+    }
+
+    // --- LAYER 1: QUIZ GAME LOGIC (5 SOAL) ---
+    const questions = [
+      {
+        question: "1. Tempat atau tipe kencan favorit yang paling bikin kita makin dekat itu...?",
+        options: [
+          { text: "A. Kulineran santai sambil ngobrol panjang", score: 20 },
+          { text: "B. Nonton bioskop / maraton film berdua", score: 20 },
+          { text: "C. Jalan-jalan outdoor / nyari suasana baru", score: 20 },
+          { text: "D. Nongkrong kopi estetis saat sunset", score: 20 }
+        ]
+      },
+      {
+        question: "2. Siapa yang paling cepat luluh atau baikan kalau lagi moody?",
+        options: [
+          { text: "A. Aku yang langsung ngalah & meluk", score: 20 },
+          { text: "B. Kamu yang paling pandai bujuk pake makanan", score: 20 },
+          { text: "C. Dua-duanya langsung ngakak sendiri", score: 20 },
+          { text: "D. Diam sejenak terus baikan sendiri", score: 15 }
+        ]
+      },
+      {
+        question: "3. Menurutmu, bahasa cinta (love language) utama kita adalah...?",
+        options: [
+          { text: "A. Quality Time (Waktu berkualitas berdua)", score: 20 },
+          { text: "B. Words of Affirmation (Pujian & kata manis)", score: 20 },
+          { text: "C. Physical Touch & Hugs (Pelukan hangat)", score: 20 },
+          { text: "D. Acts of Service (Saling perhatian & bantu)", score: 20 }
+        ]
+      },
+      {
+        question: "4. Kalau kita lagi senggang di akhir pekan, aktivitas paling seru itu...?",
+        options: [
+          { text: "A. Cobain makanan baru yang lagi viral", score: 20 },
+          { text: "B. Deeptalk malam hari sambil denger lagu", score: 20 },
+          { text: "C. Foto-foto estetis buat kenangan", score: 20 },
+          { text: "D. Rebahan bareng sambil cerita masa depan", score: 20 }
+        ]
+      },
+      {
+        question: "5. Seberapa siap kamu menjalani hari-hari depan yang indah bareng aku?",
+        options: [
+          { text: "A. 100% Siap banget selamanya! ❤️", score: 20 },
+          { text: "B. 1000% Ga mau lepas dari kamu! 🥰", score: 20 },
+          { text: "C. Siap menua bersama penuh bahagia ✨", score: 20 },
+          { text: "D. Selalu siap mengarungi suka duka 💖", score: 20 }
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let totalScore = 0;
+    let selectedScore = 0;
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      document.getElementById('questionTitle').innerText = q.question;
+      
+      const optionsGrid = document.getElementById('optionsGrid');
+      optionsGrid.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.type = 'button';
+        btn.innerHTML = `<span style="opacity:0.6;">${String.fromCharCode(65 + idx)}.</span> ${opt.text}`;
+        btn.onclick = () => selectOption(btn, opt.score);
+        optionsGrid.appendChild(btn);
+      });
+
+      // Update progress bar
+      const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+      document.getElementById('progressFill').style.width = `${progressPercent}%`;
+
+      document.getElementById('btnNextQuestion').classList.add('hidden');
+    }
+
+    function selectOption(buttonElement, score) {
+      const allBtns = document.querySelectorAll('.option-btn');
+      allBtns.forEach(btn => btn.classList.remove('selected'));
+      buttonElement.classList.add('selected');
+
+      selectedScore = score;
+      document.getElementById('btnNextQuestion').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      totalScore += selectedScore;
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < questions.length) {
+        renderQuestion();
+      } else {
+        showQuizResults();
+      }
+    }
+
+    function showQuizResults() {
+      document.getElementById('quizContainer').classList.add('hidden');
+      const resultView = document.getElementById('quizResultView');
+      resultView.classList.remove('hidden');
+
+      document.getElementById('finalScore').innerText = totalScore + " / 100";
+      
+      let msg = "";
+      if (totalScore >= 90) {
+        msg = "✨ Soulmate Sejati! Chemistry & pemahaman kita berada di tingkat tertinggi!";
+      } else if (totalScore >= 70) {
+        msg = "💖 Pasangan Sangat Kompak! Kita saling melengkapi dengan sangat manis!";
+      } else {
+        msg = "🌸 Hubungan Penuh Potensi! Makin hari kita bakal makin mengerti satu sama lain!";
+      }
+      document.getElementById('scoreMessage').innerText = msg;
+    }
+
+    // Initialize Quiz
+    renderQuestion();
+
+    // --- LAYER 2: FORM LOGIC ---
+    function submitFeedback(event) {
+      event.preventDefault();
+      const nama = document.getElementById('namaPasangan').value;
+      const suka = document.getElementById('halSuka').value;
+      const kurang = document.getElementById('kurangAku').value;
+      const harapan = document.getElementById('harapan').value;
+
+      document.getElementById('summaryScore').innerText = totalScore + " / 100";
+      document.getElementById('summaryScoreText').innerText = document.getElementById('scoreMessage').innerText;
+      document.getElementById('summaryHarapan').innerText = `"${harapan}"`;
+      document.getElementById('summarySuka').innerText = `"${suka}" (${nama})`;
+      document.getElementById('summaryKurang').innerText = `"${kurang}"`;
+
+      goToLayer(3);
+    }
+
+    // --- LAYER 3: CAROUSEL LOGIC ---
+    let currentSlide = 0;
+    const slides = document.getElementById('slides');
+    const totalSlides = document.querySelectorAll('.slide').length;
+
+    function moveSlide(direction) {
+      currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+      slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    setInterval(() => {
+      if (!document.getElementById('layer-3').classList.contains('hidden')) {
+        moveSlide(1);
+      }
+    }, 4500);
+
+    // --- BACKGROUND GOLD PARTICLES ---
+    const particleContainer = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.style.position = 'absolute';
+      p.style.width = Math.random() * 4 + 2 + 'px';
+      p.style.height = p.style.width;
+      p.style.background = 'rgba(212, 175, 55, ' + (Math.random() * 0.4 + 0.2) + ')';
+      p.style.borderRadius = '50%';
+      p.style.top = Math.random() * 100 + 'vh';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.boxShadow = '0 0 8px rgba(212, 175, 55, 0.6)';
+      particleContainer.appendChild(p);
+    }
+  </script>
+</body>
+</html>
